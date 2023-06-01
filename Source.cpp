@@ -1,5 +1,4 @@
 #include "TVector.h"
-#define TEST 1
 
 void interface_input(TVector& x, TVector& y);
 void interface_input(TVector& x, double& y);
