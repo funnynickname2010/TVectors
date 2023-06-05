@@ -7,8 +7,22 @@ void interface_options();
 int main()
 {
 	int n;
+
 	std::cout << "Input size of the vectors: ";
-	std::cin >> n;
+
+	std::string input;
+	std::getline(std::cin, input);
+	std::istringstream inps(input);
+	std::cin.clear();
+
+	while (!(inps >> n) || n <= 0)
+	{
+		std::cout << "/////INPUT ERROR\n";
+		std::cout << "Input size of the vectors: ";
+		std::getline(std::cin, input);
+		inps.str(input);  // Reuse the original inps object with the new input
+		inps.clear();     // Clear any error flags from the previous extraction
+	}
 	
 	TVector a(n), b(n);
 	int operation_id;

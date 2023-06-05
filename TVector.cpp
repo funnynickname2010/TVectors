@@ -13,41 +13,64 @@ std::ostream& operator <<(std::ostream& os, const TVector& vec)
 	return os;
 }
 
-std::istream& operator >>(std::istream& is, TVector& vec)
+std::istream& operator>>(std::istream& is, TVector& vec)
 {
-	if (std::cin.peek() == '\n')
+	if (is.peek() == '\n')
 	{
-		std::cin.ignore();
+		is.ignore();
 	}
 
-	char comma;
 	std::string input;
-	std::getline(std::cin, input);
+	std::getline(is, input);
 	std::istringstream inps(input);
-
 
 	if (inps.peek() == '(')
 	{
-	inps.ignore();
+		inps.ignore();
 	}
-	
-	inps >> vec.val[0];
 
-	for (int i = 1; inps.peek() != ')' && i < vec.size; i++)
+	for (int i = 0; i < vec.size; i++)
 	{
-		inps >> comma >> vec.val[i];
+		if (i != 0)
+		{
+			if (!(inps.get() == ','))
+			{
+				// Error handling: Failed to extract comma
+				is.setstate(std::ios::failbit);
+				break;
+			}
+		}
+		if (!(inps >> vec.val[i]))
+		{
+			// Error handling: Failed to extract vector element
+			is.setstate(std::ios::failbit);
+			break;
+		}
 	}
 
 	if (inps.peek() == ' ')
 	{
-		inps.ignore(); //Skipping the space before ')' if there's one
+		inps.ignore(); // Skipping the space before ')' if there's one
 	}
 
 	if (inps.peek() == ')')
 	{
 		inps.ignore();
-	}; //Skipping the ')'
-	
+	}
+
+	if (is.rdstate() == std::ios::failbit)
+	{
+		std::cout << "//////INPUT ERROR\n";
+
+		for (int i = 0; i < vec.size; i++)
+		{
+			vec[i] = 0;
+		}
+	}
+
+	// Clear any error flags that may have been set on the stream
+	is.clear();
+
 	return is;
 }
 
